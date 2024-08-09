@@ -60,6 +60,9 @@ async def add_member_to_chat(app, chat_username, user_id):
     except PeerIdInvalid:
         print(f"Invalid user ID: {user_id}")
         return False
+    except UserPrivacyRestricted:
+        print(f"User Privacy Restriced: {user_id}")
+        return False
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return False
