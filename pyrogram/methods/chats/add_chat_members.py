@@ -20,6 +20,7 @@ from typing import Union, List
 
 import pyrogram
 from pyrogram import raw
+from pyrogram.errors import UserPrivacyRestricted,UserAlreadyParticipant,UserNotParticipant,ChatAdminRequired
 
 
 class AddChatMembers:
@@ -31,8 +32,11 @@ class AddChatMembers:
     ) -> bool:
         """Add new chat members to a group, supergroup or channel
 
-        .. include:: /_includes/usable-by/users.rst
+        ********************
+        Fixed By @SubLiquidX
+        ********************
 
+        .. include:: /_includes/usable-by/users.rst
         Parameters:
             chat_id (``int`` | ``str``):
                 The group, supergroup or channel id
@@ -54,37 +58,59 @@ class AddChatMembers:
             .. code-block:: python
 
                 # Add one member to a group or channel
-                await app.add_chat_members(chat_id, user_id)
+                await app.sub_add_chat_members(chat_id, user_id)
 
                 # Add multiple members to a group or channel
-                await app.add_chat_members(chat_id, [user_id1, user_id2, user_id3])
+                await app.sub_add_chat_members(chat_id, [user_id1, user_id2, user_id3])
 
                 # Change forward_limit (for basic groups only)
-                await app.add_chat_members(chat_id, user_id, forward_limit=25)
+                await app.sub_add_chat_members(chat_id, user_id, forward_limit=25)
         """
-        peer = await self.resolve_peer(chat_id)
-
         if not isinstance(user_ids, list):
             user_ids = [user_ids]
 
+        peer = await client.resolve_peer(chat_id)
+        # Check if the client has admin rights in the channel/supergroup
+        for user_id in user_ids:
+            try:
+                user_peer = await client.resolve_peer(user_id)
+                await client.invoke(raw.functions.channels.GetParticipant(channel=peer, participant=user_peer))
+                raise UserAlreadyParticipant
+            except UserNotParticipant:
+                pass  # User is not a participant, proceed to add them
+            except ChatAdminRequired:
+                pass  # User is not a participant, proceed to add them
+
+
         if isinstance(peer, raw.types.InputPeerChat):
             for user_id in user_ids:
-                await self.invoke(
+                result = await client.invoke(
                     raw.functions.messages.AddChatUser(
                         chat_id=peer.chat_id,
-                        user_id=await self.resolve_peer(user_id),
+                        user_id=await client.resolve_peer(user_id),
                         fwd_limit=forward_limit
                     )
                 )
         else:
-            await self.invoke(
+            result = await client.invoke(
                 raw.functions.channels.InviteToChannel(
                     channel=peer,
                     users=[
-                        await self.resolve_peer(user_id)
+                        await client.resolve_peer(user_id)
                         for user_id in user_ids
                     ]
                 )
-            )
-
-        return True
+            )     
+        if isinstance(result, types.messages.InvitedUsers):
+            if result.missing_invitees:
+                missing_user_ids = [invitee.user_id for invitee in result.missing_invitees]
+                single_int = int(''.join(map(str, missing_user_ids)))
+                missing_user = next(invitee for invitee in result.missing_invitees if invitee.user_id == single_int)
+                if missing_user.premium_would_allow_invite == True:
+                    raise UserPrivacyRestricted
+                else:
+                    raise UserPrivacyRestricted
+            else:
+                return True
+        else:
+            return True
