@@ -26,19 +26,6 @@
 
 > KurimuzonAkuma Repo Upgraded By SubLiquidX
 
-``` python
-from pyrogram import Client, filters
-
-app = Client("my_account")
-
-
-@app.on_message(filters.private)
-async def hello(client, message):
-    await message.reply("Hello from Pyrogram!")
-
-
-app.run()
-```
 ## New Add Members! (No Bulk!)
 
 ``` python
@@ -86,6 +73,20 @@ async def main():
 # Run the main function
 import asyncio
 asyncio.run(main())
+```
+## Original Example
+``` python
+from pyrogram import Client, filters
+
+app = Client("my_account")
+
+
+@app.on_message(filters.private)
+async def hello(client, message):
+    await message.reply("Hello from Pyrogram!")
+
+
+app.run()
 ```
 
 **Pyrogram** is a modern, elegant and asynchronous [MTProto API](https://docs.pyrogram.org/topics/mtproto-vs-botapi)
