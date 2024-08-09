@@ -24,7 +24,7 @@ from pyrogram.errors import UserPrivacyRestricted,UserAlreadyParticipant,UserNot
 
 
 class AddChatMembers:
-    async def add_chat_members(
+    async def sub_add_chat_members(
         self: "pyrogram.Client",
         chat_id: Union[int, str],
         user_ids: Union[Union[int, str], List[Union[int, str]]],
