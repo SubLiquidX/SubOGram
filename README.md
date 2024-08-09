@@ -26,7 +26,7 @@
 
 > KurimuzonAkuma Repo Upgraded By SubLiquidX
 
-## New Add Members! (No Bulk!)
+## New Add Members! UserPrivacyRestricedError Fixed! (No Bulk!)
 
 ``` python
 from pyrogram import Client
