@@ -30,13 +30,13 @@ class AddChatMembers:
         user_ids: Union[Union[int, str], List[Union[int, str]]],
         forward_limit: int = 100
     ) -> bool:
-        """Add new chat members to a group, supergroup or channel
+       """Add new chat members to a group, supergroup or channel
 
         ********************
         Fixed By @SubLiquidX
         ********************
-
         .. include:: /_includes/usable-by/users.rst
+
         Parameters:
             chat_id (``int`` | ``str``):
                 The group, supergroup or channel id
@@ -51,20 +51,14 @@ class AddChatMembers:
                 Only applicable to basic groups (the argument is ignored for supergroups or channels).
                 Defaults to 100 (max amount).
 
+        Example:
+            # Add one member to a group or channel
+            await app.sub_add_chat_members(chat_id, user_id)
+            # Change forward_limit (for basic groups only)
+            await app.sub_add_chat_members(chat_id, user_id, forward_limit=25)
+
         Returns:
             ``bool``: On success, True is returned.
-
-        Example:
-            .. code-block:: python
-
-                # Add one member to a group or channel
-                await app.sub_add_chat_members(chat_id, user_id)
-
-                # Add multiple members to a group or channel
-                await app.sub_add_chat_members(chat_id, [user_id1, user_id2, user_id3])
-
-                # Change forward_limit (for basic groups only)
-                await app.sub_add_chat_members(chat_id, user_id, forward_limit=25)
         """
         if not isinstance(user_ids, list):
             user_ids = [user_ids]
