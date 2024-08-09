@@ -22,7 +22,7 @@
     </a>
 </p>
 
-## Pyrogram
+## SubOGram
 
 > KurimuzonAkuma Repo Upgraded By SubLiquidX
 
