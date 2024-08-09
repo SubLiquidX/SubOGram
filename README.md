@@ -56,19 +56,19 @@ async def add_member_to_chat(app, chat_username, user_id):
 
 async def main():
     # Replace these with your actual values
+    phone = "your phone"
     api_id = "your_api_id"
     api_hash = "your_api_hash"
-    bot_token = "your_bot_token"  # If you're using a bot. For user account, use phone number instead.
 
     chat_username = "target_chat_username"
     user_id_to_add = 123456789  # The user ID you want to add
 
-    async with Client("my_bot", api_id, api_hash, bot_token=bot_token) as app:
+    async with Client(phone, api_id, api_hash) as app:
         success = await add_member_to_chat(app, chat_username, user_id_to_add)
         if success:
-            print("Operation completed successfully")
+            print("member added successfully")
         else:
-            print("Operation failed")
+            print("member add failed")
 
 # Run the main function
 import asyncio
